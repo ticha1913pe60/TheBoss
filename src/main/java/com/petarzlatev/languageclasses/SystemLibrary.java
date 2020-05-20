@@ -4,13 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.RoundingMode;
-import java.sql.Date;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Optional;
@@ -227,8 +223,6 @@ public class SystemLibrary {
 				break;
 			}
 		} catch (NullPointerException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "THEME",
-					Messages.getString("System.ERROR"));
 			theme = Themes.THEME1.getName();
 		}
 		return theme;
@@ -492,7 +486,11 @@ public class SystemLibrary {
 	}
 
 	public static boolean noLogin() {
-		return !SystemLibrary.getProperty("LOGIN").equals("T");
+		try {
+			return !SystemLibrary.getProperty("LOGIN").equals("T");
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 
 	public static boolean createDatabase() {
@@ -511,17 +509,4 @@ public class SystemLibrary {
 		}
 	}
 
-	public static Date localDateTime2SQLDate(LocalDateTime date) {
-		LocalDateTime dateValue = date;
-		java.util.Date utilDate;
-		String dateFormat = "yyyy-MM-dd'T'HH:mm:ss";
-		DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern(dateFormat);
-		SimpleDateFormat sdf1 = new SimpleDateFormat(dateFormat);
-		try {
-			utilDate = sdf1.parse(dateValue.format(dtf1));
-		} catch (ParseException e) {
-			utilDate = null;
-		}
-		return new java.sql.Date(utilDate.getTime());
-	}
 }
