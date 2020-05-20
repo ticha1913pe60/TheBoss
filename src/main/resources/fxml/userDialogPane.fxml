@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import java.net.URL?>
+
+<DialogPane fx:id="dialogPane" styleClass="root" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+ fx:controller="com.petarzlatev.languageclasses.controller.dialog.UserDialogController">
+    <content>
+    	<GridPane hgap="10" vgap="10">
+    		<Label fx:id="labelUserName" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+    		<TextField fx:id="userName" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+    		<Label fx:id="labelPassword" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    		<PasswordField fx:id="passWord" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    		<Label fx:id="labelRePassword" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    		<PasswordField fx:id="rePassWord" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    		<Label fx:id="labelFirstName" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+    		<TextField fx:id="firstName" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    		<Label fx:id="labelLastName" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+    		<TextField fx:id="lastName" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+			<CheckBox fx:id="isAdmin" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+    	</GridPane>
+    </content>
+</DialogPane>

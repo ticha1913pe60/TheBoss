@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import com.petarzlatev.languageclasses.view.LessonCalendarView?>
+
+<BorderPane fx:id="thePane" styleClass="root" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.petarzlatev.languageclasses.controller.ScheduleController">
+	<top>
+    	<MenuBar>
+	       	<Menu fx:id="menuOptions">
+		        <items>
+			        <MenuItem fx:id="menuItemMain" onAction="#handleMainMenu"/>
+				    <MenuItem fx:id="menuItemStudents" onAction="#handleStudents"/>
+				    <MenuItem fx:id="menuItemUsers" onAction="#handleUsers"/>
+			        <MenuItem fx:id="menuItemLogOut" onAction="#handleLogout"/>
+			        <SeparatorMenuItem />
+			        <MenuItem fx:id="menuItemExit" onAction="#handleExit"/>
+		        </items>
+      		</Menu>
+    	</MenuBar>
+  	</top>
+	<center>
+		<LessonCalendarView fx:id="calendarView">
+		</LessonCalendarView>
+	</center>	
+</BorderPane>

@@ -1,0 +1,24 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+        <property name="use_sql_comments">true</property>
+        <property name="dialect">com.petarzlatev.languageclasses.dao.sqlite.SQLiteDialect</property>
+        <property name="connection.driver_class">org.sqlite.JDBC</property>
+        <property name="connection.url">jdbc:sqlite:C:\Users\zlatev.p\eclipse-workspace\databases\hibernate.db</property>
+        <property name="connection.username"></property>
+        <property name="connection.password"></property>
+
+        <property name="hibernate.hbm2ddl.auto">create</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+
+        <mapping class="com.petarzlatev.languageclasses.model.Student"/>
+        <mapping class="com.petarzlatev.languageclasses.model.User"/>
+        <mapping class="com.petarzlatev.languageclasses.model.Person"/>
+        <mapping class="com.petarzlatev.languageclasses.model.Lesson"/>
+    </session-factory>
+</hibernate-configuration>
