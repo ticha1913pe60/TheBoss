@@ -92,6 +92,16 @@
 										<include>System.properties</include>
 									</includes>
 								</resource>
+								<resource>
+									<directory>${basedir}/src/main/resources</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>hibernate_oracle_create.cfg.xml</include>
+										<include>hibernate_oracle.cfg.xml</include>
+										<include>hibernate_sqlite_create.cfg.xml</include>
+										<include>hibernate_sqlite.cfg.xml</include>
+									</includes>
+								</resource>
 							</resources>
 						</configuration>
 					</execution>
