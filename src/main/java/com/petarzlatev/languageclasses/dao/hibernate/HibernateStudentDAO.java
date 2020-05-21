@@ -18,7 +18,7 @@ import com.petarzlatev.languageclasses.model.Student;
 public class HibernateStudentDAO implements PersonDAO, StudentDAO {
 	@Override
 	public List<Student> loadStudents() throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -38,7 +38,7 @@ public class HibernateStudentDAO implements PersonDAO, StudentDAO {
 	@Override
 	public int addStudent(String firstName, String lastName, String phone, double rate) throws SQLException {
 		int newID = 0;
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -73,7 +73,7 @@ public class HibernateStudentDAO implements PersonDAO, StudentDAO {
 	@Override
 	public boolean updateStudent(String firstName, String lastName, String phone, double rate, int id)
 			throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -98,7 +98,7 @@ public class HibernateStudentDAO implements PersonDAO, StudentDAO {
 	}
 
 	private boolean deleteStudent(int id) throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 

@@ -12,7 +12,11 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 
 import com.petarzlatev.languageclasses.Messages;
+import com.petarzlatev.languageclasses.SystemFormatter;
 import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemMessages;
+import com.petarzlatev.languageclasses.SystemProperties;
+import com.petarzlatev.languageclasses.SystemValidation;
 import com.petarzlatev.languageclasses.controller.dialog.DialogControllerActions;
 import com.petarzlatev.languageclasses.controller.dialog.StudentDialogController;
 import com.petarzlatev.languageclasses.dao.StudentDAO;
@@ -101,7 +105,7 @@ public class StudentsController extends Controller implements Initializable {
 		phoneNumber.setText(Messages.getString("StudentColumn.PHONE"));
 		ratePerHour.setText(Messages.getString("StudentColumn.RATE"));
 
-		menuItemLogOut.setDisable(SystemLibrary.noLogin());
+		menuItemLogOut.setDisable(SystemProperties.noLogin());
 		firstName.setCellValueFactory(new PropertyValueFactory<Student, String>("firstName"));
 		lastName.setCellValueFactory(new PropertyValueFactory<Student, String>("lastName"));
 		phoneNumber.setCellValueFactory(new PropertyValueFactory<Student, String>("phoneNumber"));
@@ -156,10 +160,10 @@ public class StudentsController extends Controller implements Initializable {
 		try {
 			handleStudentChange(null);
 		} catch (IOException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
 					Messages.getString("System.ERROR"));
 		} catch (SQLException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
 					Messages.getString("System.ERROR"));
 		}
 	}
@@ -173,14 +177,14 @@ public class StudentsController extends Controller implements Initializable {
 			try {
 				handleStudentChange(student);
 			} catch (IOException e) {
-				SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
+				SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
 						Messages.getString("System.ERROR"));
 			} catch (SQLException e) {
-				SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
+				SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
 						Messages.getString("System.ERROR"));
 			}
 		} else {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SELECT_ROW"),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SELECT_ROW"),
 					Messages.getString("System.ERROR"));
 		}
 	}
@@ -218,7 +222,7 @@ public class StudentsController extends Controller implements Initializable {
 
 		// set style for scene
 		dialog.getDialogPane().getStylesheets()
-				.add(getClass().getResource("/fxml/css/" + SystemLibrary.getUITheme()).toExternalForm());
+				.add(getClass().getResource("/fxml/css/" + SystemProperties.getUITheme()).toExternalForm());
 		dialog.getDialogPane().getStyleClass().add("myDialog");
 
 		// set controls defaults
@@ -262,11 +266,11 @@ public class StudentsController extends Controller implements Initializable {
 					String[] students = line.replaceAll("\\s", "").split(",");
 					if (students.length == 4) {
 						try {
-							if (SystemLibrary.validateFullName(students[0], students[1])) {
-								if (!students[2].isEmpty() && SystemLibrary.validatePhoneNumber(students[2])) {
-									students[0] = SystemLibrary.toUpperFirstLetter(students[0]);
-									students[1] = SystemLibrary.toUpperFirstLetter(students[1]);
-									students[2] = SystemLibrary.formatPhone(students[2]);
+							if (SystemValidation.validateFullName(students[0], students[1])) {
+								if (!students[2].isEmpty() && SystemValidation.validatePhoneNumber(students[2])) {
+									students[0] = SystemFormatter.formatNameFirstLetter(students[0]);
+									students[1] = SystemFormatter.formatNameFirstLetter(students[1]);
+									students[2] = SystemFormatter.formatPhone(students[2]);
 									newID = database.addStudent(students[0], students[1], students[2],
 											Double.parseDouble(students[3]));
 									if (newID > 0) {
@@ -275,7 +279,7 @@ public class StudentsController extends Controller implements Initializable {
 										count++;
 									}
 								} else {
-									SystemLibrary.showErrorMsg(
+									SystemMessages.showErrorMsg(
 											SystemLibrary.DOUBLE_QUOTE + students[2] + SystemLibrary.DOUBLE_QUOTE
 													+ Messages.getString("Error.ERROR_INVALID_PHONE"),
 											Messages.getString("System.ERROR"));
@@ -283,20 +287,20 @@ public class StudentsController extends Controller implements Initializable {
 									break;
 								}
 							} else {
-								SystemLibrary.showErrorMsg(SystemLibrary.DOUBLE_QUOTE + students[0] + " " + students[1]
+								SystemMessages.showErrorMsg(SystemLibrary.DOUBLE_QUOTE + students[0] + " " + students[1]
 										+ SystemLibrary.DOUBLE_QUOTE + Messages.getString("Error.ERROR_INVALID_NAME"),
 										Messages.getString("System.ERROR"));
 								bRet = false;
 								break;
 							}
 						} catch (NumberFormatException e) {
-							SystemLibrary.showErrorMsg(
+							SystemMessages.showErrorMsg(
 									Messages.getString("Error.ERROR_INVALID_NUMBER") + " " + e.getMessage(),
 									Messages.getString("System.ERROR"));
 							bRet = false;
 							break;
 						} catch (SQLException e) {
-							SystemLibrary.showErrorMsg(
+							SystemMessages.showErrorMsg(
 									Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
 									Messages.getString("System.ERROR"));
 							bRet = false;
@@ -304,20 +308,20 @@ public class StudentsController extends Controller implements Initializable {
 						}
 
 					} else {
-						SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_INVALID_DATA_FORMAT") + line,
+						SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_INVALID_DATA_FORMAT") + line,
 								Messages.getString("System.ERROR"));
 						bRet = false;
 						break;
 					}
 				}
 				if (bRet) {
-					SystemLibrary.showMsgBox(
+					SystemMessages.showMsgBox(
 							count + (count == 1 ? Messages.getString("MSG_IMPORT_SINGLE_ROW")
 									: Messages.getString("MSG_IMPORT_MULTIPLE_ROWS")),
 							Messages.getString("System.MSG"));
 				}
 			} catch (FileNotFoundException e) {
-				SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_FILE_NOT_FOUND") + " " + e.getMessage(),
+				SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_FILE_NOT_FOUND") + " " + e.getMessage(),
 						Messages.getString("System.ERROR"));
 			}
 		}

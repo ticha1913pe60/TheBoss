@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.petarzlatev.languageclasses.Messages;
-import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemProperties;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,13 +33,13 @@ public class MainController extends Controller implements Initializable {
 		usersBtn.setText(Messages.getString("MainMenu.USERS"));
 		scheduleBtn.setText(Messages.getString("MainMenu.SCHEDULE"));
 		logoutBtn.setText(Messages.getString("MainMenu.LOGOUT"));
-		logoutBtn.setDisable(SystemLibrary.noLogin());
+		logoutBtn.setDisable(SystemProperties.noLogin());
 		studentsBtn.setMaxWidth(Double.MAX_VALUE);
 		studentsBtn.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				handleStudents();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				if (!SystemLibrary.noLogin()) {
+				if (!SystemProperties.noLogin()) {
 					handleLogout();
 				}
 			}
@@ -49,7 +49,7 @@ public class MainController extends Controller implements Initializable {
 			if (event.getCode() == KeyCode.ENTER) {
 				handleUsers();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				if (!SystemLibrary.noLogin()) {
+				if (!SystemProperties.noLogin()) {
 					handleLogout();
 				}
 			}
@@ -59,7 +59,7 @@ public class MainController extends Controller implements Initializable {
 			if (event.getCode() == KeyCode.ENTER) {
 				handleSchedule();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				if (!SystemLibrary.noLogin()) {
+				if (!SystemProperties.noLogin()) {
 					handleLogout();
 				}
 			}
@@ -69,7 +69,7 @@ public class MainController extends Controller implements Initializable {
 			if (event.getCode() == KeyCode.ENTER) {
 				handleLogout();
 			} else if (event.getCode() == KeyCode.ESCAPE) {
-				if (!SystemLibrary.noLogin()) {
+				if (!SystemProperties.noLogin()) {
 					handleLogout();
 				}
 			}

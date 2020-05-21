@@ -11,6 +11,9 @@ import javax.persistence.PersistenceException;
 import com.petarzlatev.languageclasses.Messages;
 import com.petarzlatev.languageclasses.PasswordUtils;
 import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemLogger;
+import com.petarzlatev.languageclasses.SystemMessages;
+import com.petarzlatev.languageclasses.SystemProperties;
 import com.petarzlatev.languageclasses.dao.UserDAO;
 import com.petarzlatev.languageclasses.model.DataSource;
 import com.petarzlatev.languageclasses.model.User;
@@ -75,32 +78,32 @@ public class LoginController implements Initializable {
 			if (currentUser != null && PasswordUtils.verifyUserPassword(password.getText(), currentUser.getPassword(),
 					currentUser.getSalt())) {
 				SystemLibrary.setCurrentUser(currentUser);
-				SystemLibrary.logEvent("User: " + currentUser.getUsername() + " logged in", Level.INFO,
+				SystemLogger.logEvent("User: " + currentUser.getUsername() + " logged in", Level.INFO,
 						getClass().getName() + " " + SystemLibrary.methodName());
 				primaryStage.setTitle(Messages.getString("LoginScene.MAINTITLE") + " - "
 						+ SystemLibrary.getCurrentUser().getUsername());
 				try {
 					Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/main.fxml")), 300, 200);
 					scene.getStylesheets()
-							.add(getClass().getResource("/fxml/css/" + SystemLibrary.getUITheme()).toExternalForm());
+							.add(getClass().getResource("/fxml/css/" + SystemProperties.getUITheme()).toExternalForm());
 					primaryStage.setScene(scene);
 					primaryStage.centerOnScreen();
 				} catch (IOException e) {
-					SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
+					SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
 							Messages.getString("System.ERROR"));
 				}
 			} else {
-				SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_LOGIN"), Messages.getString("System.ERROR"));
+				SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_LOGIN"), Messages.getString("System.ERROR"));
 				password.selectAll();
 			}
 		} catch (SQLException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
 					Messages.getString("System.ERROR"));
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_NO_DATABASE"),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_NO_DATABASE"),
 					Messages.getString("System.ERROR"));
 			Platform.exit();
 		} catch (PersistenceException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_NO_DATABASE"),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_NO_DATABASE"),
 					Messages.getString("System.ERROR"));
 			Platform.exit();
 		}

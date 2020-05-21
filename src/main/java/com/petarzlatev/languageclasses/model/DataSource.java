@@ -7,8 +7,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
 import com.petarzlatev.languageclasses.Messages;
 import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemLogger;
+import com.petarzlatev.languageclasses.SystemProperties;
 import com.petarzlatev.languageclasses.dao.LessonDAO;
 import com.petarzlatev.languageclasses.dao.StudentDAO;
 import com.petarzlatev.languageclasses.dao.UserDAO;
@@ -57,6 +63,10 @@ public class DataSource {
 	public static final String SQLITE = "1";
 	public static final String ORACLE = "2";
 
+	/****************************************************
+	 * Members *
+	 ****************************************************/
+
 	private Connection conn;
 	private static DataSource instance = new DataSource();
 
@@ -73,18 +83,24 @@ public class DataSource {
 	}
 
 	public UserDAO getUserDAO() {
-		String dbType = SystemLibrary.getProperty("DB_TYPE");
+		String dbType = SystemProperties.getDBType();
 		UserDAO user = null;
 
-		if (dbType != null) {
-			if (SystemLibrary.useHibernate()) {
-				user = new HibernateUserDAO();
-			} else {
+		if (SystemProperties.useHibernate()) {
+			user = new HibernateUserDAO();
+		} else {
+			if (dbType != null) {
 				if (dbType.equals(SQLITE)) {
 					user = new SQLiteUserDAO();
 				} else if (dbType.equals(ORACLE)) {
 					user = new OracleUserDAO();
+				} else {
+					SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM") + "DB_TYPE", Level.SEVERE,
+							getClass().getName() + " " + SystemLibrary.methodName());
 				}
+			} else {
+				SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_TYPE", Level.SEVERE,
+						getClass().getName() + " " + SystemLibrary.methodName());
 			}
 		}
 
@@ -92,18 +108,24 @@ public class DataSource {
 	}
 
 	public StudentDAO getStudentDAO() {
-		String dbType = SystemLibrary.getProperty("DB_TYPE");
+		String dbType = SystemProperties.getDBType();
 		StudentDAO student = null;
 
-		if (dbType != null) {
-			if (SystemLibrary.useHibernate()) {
-				student = new HibernateStudentDAO();
-			} else {
+		if (SystemProperties.useHibernate()) {
+			student = new HibernateStudentDAO();
+		} else {
+			if (dbType != null) {
 				if (dbType.equals(SQLITE)) {
 					student = new SQLiteStudentDAO();
 				} else if (dbType.equals(ORACLE)) {
 					student = new OracleStudentDAO();
+				} else {
+					SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM") + "DB_TYPE", Level.SEVERE,
+							getClass().getName() + " " + SystemLibrary.methodName());
 				}
+			} else {
+				SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_TYPE", Level.SEVERE,
+						getClass().getName() + " " + SystemLibrary.methodName());
 			}
 		}
 
@@ -111,26 +133,32 @@ public class DataSource {
 	}
 
 	public LessonDAO getLessonDAO() {
-		String dbType = SystemLibrary.getProperty("DB_TYPE");
+		String dbType = SystemProperties.getDBType();
 		LessonDAO lesson = null;
 
-		if (dbType != null) {
-			if (SystemLibrary.useHibernate()) {
-				lesson = new HibernateLessonDAO();
-			} else {
+		if (SystemProperties.useHibernate()) {
+			lesson = new HibernateLessonDAO();
+		} else {
+			if (dbType != null) {
 				if (dbType.equals(SQLITE)) {
 					lesson = new SQLiteLessonDAO();
 				} else if (dbType.equals(ORACLE)) {
 					lesson = new OracleLessonDAO();
+				} else {
+					SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM") + "DB_TYPE", Level.SEVERE,
+							getClass().getName() + " " + SystemLibrary.methodName());
 				}
+			} else {
+				SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_TYPE", Level.SEVERE,
+						getClass().getName() + " " + SystemLibrary.methodName());
 			}
 		}
 
 		return lesson;
 	}
 
-	public static String getHibernateConfigFile() {
-		String dbType = SystemLibrary.getProperty("DB_TYPE");
+	public String getHibernateConfigFile() {
+		String dbType = SystemProperties.getDBType();
 		String fileName = null;
 
 		if (dbType != null) {
@@ -138,14 +166,20 @@ public class DataSource {
 				fileName = "hibernate_sqlite.cfg.xml";
 			} else if (dbType.equals(ORACLE)) {
 				fileName = "hibernate_oracle.cfg.xml";
+			} else {
+				SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM") + "DB_TYPE", Level.SEVERE,
+						getClass().getName() + " " + SystemLibrary.methodName());
 			}
+		} else {
+			SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_TYPE", Level.SEVERE,
+					getClass().getName() + " " + SystemLibrary.methodName());
 		}
 
 		return fileName;
 	}
 
-	public static String getHibernateCreateConfigFile() {
-		String dbType = SystemLibrary.getProperty("DB_TYPE");
+	public String getHibernateCreateConfigFile() {
+		String dbType = SystemProperties.getDBType();
 		String fileName = null;
 
 		if (dbType != null) {
@@ -153,10 +187,44 @@ public class DataSource {
 				fileName = "hibernate_sqlite_create.cfg.xml";
 			} else if (dbType.equals(ORACLE)) {
 				fileName = "hibernate_oracle_create.cfg.xml";
+
+			} else {
+				SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM") + "DB_TYPE", Level.SEVERE,
+						getClass().getName() + " " + SystemLibrary.methodName());
 			}
+		} else {
+			SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_TYPE", Level.SEVERE,
+					getClass().getName() + " " + SystemLibrary.methodName());
 		}
 
 		return fileName;
+	}
+
+	/****************************************************
+	 * Create DB *
+	 ****************************************************/
+	public static boolean createDatabaseIfNotExist() {
+
+		if (SystemProperties.createDatabase()) {
+			SessionFactory factory = new Configuration().configure(getInstance().getHibernateCreateConfigFile())
+					.addAnnotatedClass(Lesson.class).addAnnotatedClass(Student.class).buildSessionFactory();
+			Session session = factory.getCurrentSession();
+
+			try {
+				session.beginTransaction();
+				User defaultUser = new User("Kristina", "Paskulova", "pakri",
+						"8VoeSn7gIjWB+/espWp2we4CCkEzzd5yua0QEj3jQhY=", "T", 0, "6fhUbVwn7b5EjmOjrA0UFvMU1nTH9L");
+				session.save(defaultUser);
+				session.getTransaction().commit();
+
+				return true;
+			} finally {
+				session.close();
+				factory.close();
+			}
+		}
+
+		return true;
 	}
 
 	/****************************************************
@@ -168,10 +236,13 @@ public class DataSource {
 		String dbDriver;
 		String dbPath;
 		String dbName;
+		String dbType;
+		String username = null;
+		String password = null;
 
 		try {
-			SystemLibrary.getSystemProperties();
-			SystemLibrary.runLogger();
+			SystemProperties.getSystemProperties();
+			SystemLogger.runLogger();
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 		} catch (FileNotFoundException e) {
 			System.out.println(Messages.getString("Error.ERROR_LOADING_CONFIG_FILE") + " " + e.getMessage());
@@ -184,60 +255,66 @@ public class DataSource {
 			bRet = false;
 		}
 		if (bRet) {
-			String dbType = SystemLibrary.getProperty("DB_TYPE");
-			if (dbType != null && (dbType.equals(SQLITE) || dbType.equals(ORACLE))) {
-				if ((dbDriver = SystemLibrary.getProperty("DB_DRIVER")) != null) {
-					if ((dbPath = SystemLibrary.getProperty("DB_PATH")) != null) {
-						if ((dbName = SystemLibrary.getProperty("DB_NAME")) != null) {
-							String username = SystemLibrary.getProperty("DB_USER");
-							String password = SystemLibrary.getProperty("DB_PASS");
-							if (dbType.equals(ORACLE)) {
-								if (username != null) {
-									if (password == null) {
-										SystemLibrary.logEvent(
-												Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_PASS",
+			if ((dbType = SystemProperties.getDBType()) != null) {
+				if (dbType.equals(SQLITE) || dbType.equals(ORACLE)) {
+					if ((dbDriver = SystemProperties.getDBDriver()) != null) {
+						if ((dbPath = SystemProperties.getDBPath()) != null) {
+							if ((dbName = SystemProperties.getDBName()) != null) {
+								if (dbType.equals(ORACLE)) {
+									if ((username = SystemProperties.getOracleUserName()) != null) {
+										if ((password = SystemProperties.getOraclePassWord()) == null) {
+											SystemLogger.logEvent(
+													Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_PASS",
+													Level.SEVERE,
+													getClass().getName() + " " + SystemLibrary.methodName());
+											bRet = false;
+										}
+									} else {
+										SystemLogger.logEvent(
+												Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_USER",
 												Level.SEVERE, getClass().getName() + " " + SystemLibrary.methodName());
 										bRet = false;
 									}
-								} else {
-									SystemLibrary.logEvent(
-											Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_USER",
-											Level.SEVERE, getClass().getName() + " " + SystemLibrary.methodName());
-									bRet = false;
 								}
-							}
-							if (bRet) {
-								if (SystemLibrary.createDatabaseIfNotExist()) {
-									if (!SystemLibrary.useHibernate()) {
-										if (dbType.equals(ORACLE)) {
-											conn = DriverManager.getConnection(dbDriver + dbPath + dbName, username,
-													password);
-										} else {
-											conn = DriverManager.getConnection(dbDriver + dbPath + dbName);
+								if (bRet) {
+									if (DataSource.createDatabaseIfNotExist()) {
+										if (!SystemProperties.useHibernate()) {
+											if (dbType.equals(ORACLE)) {
+												conn = DriverManager.getConnection(dbDriver + dbPath + dbName, username,
+														password);
+											} else {
+												conn = DriverManager.getConnection(dbDriver + dbPath + dbName);
 
+											}
+											SystemLogger.logEvent("Established database connection:" + dbPath + dbName,
+													Level.INFO,
+													getClass().getName() + " " + SystemLibrary.methodName());
 										}
-										SystemLibrary.logEvent("Established database connection:" + dbPath + dbName,
-												Level.INFO, getClass().getName() + " " + SystemLibrary.methodName());
 									}
 								}
+							} else {
+								SystemLogger.logEvent(
+										Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_NAME",
+										Level.SEVERE, getClass().getName() + " " + SystemLibrary.methodName());
+								bRet = false;
 							}
 						} else {
-							SystemLibrary.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_NAME",
+							SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_PATH",
 									Level.SEVERE, getClass().getName() + " " + SystemLibrary.methodName());
 							bRet = false;
 						}
 					} else {
-						SystemLibrary.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_PATH",
+						SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_DRIVER",
 								Level.SEVERE, getClass().getName() + " " + SystemLibrary.methodName());
 						bRet = false;
 					}
 				} else {
-					SystemLibrary.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_DRIVER",
-							Level.SEVERE, getClass().getName() + " " + SystemLibrary.methodName());
+					SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM") + "DB_TYPE", Level.SEVERE,
+							getClass().getName() + " " + SystemLibrary.methodName());
 					bRet = false;
 				}
 			} else {
-				SystemLibrary.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_TYPE", Level.SEVERE,
+				SystemLogger.logEvent(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "DB_TYPE", Level.SEVERE,
 						getClass().getName() + " " + SystemLibrary.methodName());
 				bRet = false;
 			}
@@ -251,7 +328,7 @@ public class DataSource {
 	 ****************************************************/
 
 	public void close() throws SQLException {
-		if (!SystemLibrary.useHibernate()) {
+		if (!SystemProperties.useHibernate()) {
 			if (conn != null) {
 				conn.close();
 			}

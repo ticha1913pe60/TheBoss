@@ -2,10 +2,10 @@ package com.petarzlatev.languageclasses.controller;
 
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.ResourceBundle;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.ResourceBundle;
 
 import com.calendarfx.model.Calendar;
 import com.calendarfx.model.Calendar.Style;
@@ -18,6 +18,8 @@ import com.calendarfx.view.DateControl.EntryEditParameter;
 import com.calendarfx.view.EntryViewBase;
 import com.petarzlatev.languageclasses.Messages;
 import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemMessages;
+import com.petarzlatev.languageclasses.SystemProperties;
 import com.petarzlatev.languageclasses.dao.LessonDAO;
 import com.petarzlatev.languageclasses.model.DataSource;
 import com.petarzlatev.languageclasses.model.Lesson;
@@ -71,7 +73,7 @@ public class ScheduleController extends Controller implements Initializable {
 		menuItemExit.setText(Messages.getString("MenuItem.EXIT"));
 		menuItemLogOut.setText(Messages.getString("MenuItem.LOG_OUT"));
 
-		menuItemLogOut.setDisable(SystemLibrary.noLogin());
+		menuItemLogOut.setDisable(SystemProperties.noLogin());
 		Calendar lessons = new Calendar("Lessons");
 
 		calendarView.setOnKeyPressed(event -> {
@@ -154,7 +156,7 @@ public class ScheduleController extends Controller implements Initializable {
 								database.deleteLesson(entry.getUserObject().getLessonID());
 							}
 						} catch (SQLException e1) {
-							SystemLibrary.showErrorMsg(
+							SystemMessages.showErrorMsg(
 									Messages.getString("Error.ERROR_SQL_QUERY") + " " + e1.getMessage(),
 									Messages.getString("System.ERROR"));
 						}
@@ -190,11 +192,7 @@ public class ScheduleController extends Controller implements Initializable {
 				entry.changeEndTime(lesson.getEnd().toLocalTime());
 				entry.setCalendar(lessons);
 			}
-			try {
-				lessons.setStyle(Style.valueOf("STYLE" + SystemLibrary.getProperty("STYLE")));
-			} catch (IllegalArgumentException e1) {
-			} catch (NullPointerException e2) {
-			}
+			lessons.setStyle(Style.valueOf(SystemProperties.getCalendarStyle()));
 
 			CalendarSource myCalendarSource = new CalendarSource("My Calendars");
 			myCalendarSource.getCalendars().addAll(lessons);

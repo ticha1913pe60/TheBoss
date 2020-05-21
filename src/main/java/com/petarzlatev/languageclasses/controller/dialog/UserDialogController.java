@@ -6,8 +6,11 @@ import java.util.ResourceBundle;
 
 import com.petarzlatev.languageclasses.Messages;
 import com.petarzlatev.languageclasses.PasswordUtils;
+import com.petarzlatev.languageclasses.SystemFormatter;
 import com.petarzlatev.languageclasses.SystemLibrary;
 import com.petarzlatev.languageclasses.SystemLibrary.OperType;
+import com.petarzlatev.languageclasses.SystemMessages;
+import com.petarzlatev.languageclasses.SystemValidation;
 import com.petarzlatev.languageclasses.dao.UserDAO;
 import com.petarzlatev.languageclasses.model.DataSource;
 import com.petarzlatev.languageclasses.model.Person;
@@ -80,20 +83,20 @@ public class UserDialogController implements Initializable, DialogControllerActi
 				&& !rePassWord.getText().trim().isEmpty();
 
 		if (bRet) {
-			String firstname = SystemLibrary.toUpperFirstLetter(firstName.getText().trim());
-			String lastname = SystemLibrary.toUpperFirstLetter(lastName.getText().trim());
+			String firstname = SystemFormatter.formatNameFirstLetter(firstName.getText().trim());
+			String lastname = SystemFormatter.formatNameFirstLetter(lastName.getText().trim());
 			String password = passWord.getText().trim();
 			String rePassword = rePassWord.getText().trim();
-			if (SystemLibrary.validateFullName(firstname, lastname)) {
+			if (SystemValidation.validateFullName(firstname, lastname)) {
 				if (password.equals(rePassword)) {
 					bRet = true;
 				} else {
-					SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_PASSWORD_MATCH"),
+					SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_PASSWORD_MATCH"),
 							Messages.getString("System.ERROR"));
 					bRet = false;
 				}
 			} else {
-				SystemLibrary
+				SystemMessages
 						.showErrorMsg(
 								SystemLibrary.DOUBLE_QUOTE + firstname + " " + lastname + SystemLibrary.DOUBLE_QUOTE
 										+ Messages.getString("Error.ERROR_INVALID_NAME"),
@@ -101,7 +104,7 @@ public class UserDialogController implements Initializable, DialogControllerActi
 				bRet = false;
 			}
 		} else {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_EMPTY_FIELD"),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_EMPTY_FIELD"),
 					Messages.getString("System.ERROR"));
 			bRet = false;
 		}
@@ -126,8 +129,8 @@ public class UserDialogController implements Initializable, DialogControllerActi
 	public Person processData(OperType operType, Person user) throws SQLException {
 		int userID;
 		User newUser = (User) user;
-		String firstname = SystemLibrary.toUpperFirstLetter(firstName.getText().trim());
-		String lastname = SystemLibrary.toUpperFirstLetter(lastName.getText().trim());
+		String firstname = SystemFormatter.formatNameFirstLetter(firstName.getText().trim());
+		String lastname = SystemFormatter.formatNameFirstLetter(lastName.getText().trim());
 		String username = userName.getText().trim();
 		String password = passWord.getText().trim();
 		String isadmin = (isAdmin.isSelected()) ? "T" : "F";
@@ -138,7 +141,7 @@ public class UserDialogController implements Initializable, DialogControllerActi
 			if (userID > 0) {
 				newUser = new User(firstname, lastname, username, securePassword, isadmin, userID, salt);
 			} else {
-				SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_USER_EXISTS") + username,
+				SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_USER_EXISTS") + username,
 						Messages.getString("System.ERROR"));
 			}
 		} else if (operType == SystemLibrary.OperType.EDIT) {

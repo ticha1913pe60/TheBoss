@@ -12,6 +12,7 @@ import com.calendarfx.view.popover.EntryPopOverPane;
 import com.calendarfx.view.popover.RecurrencePopup;
 import com.petarzlatev.languageclasses.Messages;
 import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemMessages;
 import com.petarzlatev.languageclasses.dao.StudentDAO;
 import com.petarzlatev.languageclasses.model.DataSource;
 import com.petarzlatev.languageclasses.model.Lesson;
@@ -52,7 +53,7 @@ public class LessonDetailsView extends EntryPopOverPane {
         try {
             studentsList = database.loadStudents();
         } catch (SQLException e) {
-            SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
+            SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
                     Messages.getString("System.ERROR"));
         }
         getStyleClass().add("entry-details-view");

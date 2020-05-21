@@ -19,7 +19,7 @@ public class HibernateLessonDAO implements LessonDAO {
 
 	@Override
 	public List<Lesson> loadLessons() throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Lesson.class).addAnnotatedClass(Student.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -40,7 +40,7 @@ public class HibernateLessonDAO implements LessonDAO {
 	@Override
 	public int addLesson(Entry<Lesson> entry) throws SQLException {
 		int newID = 0;
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).addAnnotatedClass(Lesson.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -75,7 +75,7 @@ public class HibernateLessonDAO implements LessonDAO {
 
 	@Override
 	public boolean deleteLesson(int id) throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).addAnnotatedClass(Lesson.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 

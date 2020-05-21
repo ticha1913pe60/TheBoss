@@ -29,7 +29,7 @@ import com.calendarfx.util.LoggingDomain;
 import com.calendarfx.view.DateControl;
 import com.calendarfx.view.ZonedDateTimeProvider;
 import com.petarzlatev.languageclasses.Messages;
-import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemMessages;
 import com.petarzlatev.languageclasses.dao.LessonDAO;
 import com.petarzlatev.languageclasses.model.DataSource;
 import com.petarzlatev.languageclasses.model.Lesson;
@@ -91,7 +91,7 @@ public class LessonCreateDeleteHandler {
 								database.deleteLesson(((Lesson) entry.getUserObject()).getLessonID());
 							}
 						} catch (SQLException e1) {
-							SystemLibrary.showErrorMsg(
+							SystemMessages.showErrorMsg(
 									Messages.getString("Error.ERROR_SQL_QUERY") + " " + e1.getMessage(),
 									Messages.getString("System.ERROR"));
 						}

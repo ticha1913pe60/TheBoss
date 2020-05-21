@@ -58,11 +58,4 @@ public class PasswordUtils {
 		return returnValue;
 	}
 	
-//	public static void main(String args[]) {
-//		String salt = getSalt(30);
-//		String pass = generateSecurePassword("parola", salt);
-//		
-//		System.out.println(pass);
-//		System.out.println(salt);
-//	}
 }

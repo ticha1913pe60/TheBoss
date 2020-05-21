@@ -19,7 +19,7 @@ import com.petarzlatev.languageclasses.model.User;
 public class HibernateUserDAO implements PersonDAO, UserDAO {
 	@Override
 	public User loadCurrentUser(String username) throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(User.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -44,7 +44,7 @@ public class HibernateUserDAO implements PersonDAO, UserDAO {
 
 	@Override
 	public List<User> loadUsers() throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(User.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -65,7 +65,7 @@ public class HibernateUserDAO implements PersonDAO, UserDAO {
 	public int addUser(String firstName, String lastName, String username, String password, String isAdmin, String salt)
 			throws SQLException {
 		int newID = 0;
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(User.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -99,7 +99,7 @@ public class HibernateUserDAO implements PersonDAO, UserDAO {
 	@Override
 	public boolean updateUser(String firstName, String lastName, String username, String password, String isAdmin,
 			int id) throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(User.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
@@ -126,7 +126,7 @@ public class HibernateUserDAO implements PersonDAO, UserDAO {
 
 	@Override
 	public boolean deleteUser(int id) throws SQLException {
-		SessionFactory factory = new Configuration().configure(DataSource.getHibernateConfigFile())
+		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 

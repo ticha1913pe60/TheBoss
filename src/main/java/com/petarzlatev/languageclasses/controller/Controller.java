@@ -5,6 +5,8 @@ import java.sql.SQLException;
 
 import com.petarzlatev.languageclasses.Messages;
 import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemMessages;
+import com.petarzlatev.languageclasses.SystemProperties;
 import com.petarzlatev.languageclasses.dao.PersonDAO;
 import com.petarzlatev.languageclasses.model.DataSource;
 import com.petarzlatev.languageclasses.model.Person;
@@ -31,18 +33,18 @@ public abstract class Controller {
 			primaryStage.setTitle(title + " - " + SystemLibrary.getCurrentUser().getUsername());
 			Scene scene = new Scene(FXMLLoader.load(getClass().getResource(fxml)), width, height);
 			scene.getStylesheets()
-					.add(getClass().getResource("/fxml/css/" + SystemLibrary.getUITheme()).toExternalForm());
+					.add(getClass().getResource("/fxml/css/" + SystemProperties.getUITheme()).toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.centerOnScreen();
 		} catch (IOException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
 					Messages.getString("System.ERROR"));
 		}
 	}
 
 	@FXML
 	public void handleMainMenu() {
-		if (SystemLibrary.yesNoQuery(thePane.getScene().getWindow(), Messages.getString("MainMenu.TITLE"),
+		if (SystemMessages.showYesNoQuery(thePane.getScene().getWindow(), Messages.getString("MainMenu.TITLE"),
 				Messages.getString("System.ARE_YOU_SURE"))) {
 			switchScene((Stage) thePane.getScene().getWindow(), Messages.getString("LoginScene.MAINTITLE"),
 					"/fxml/main.fxml", 300, 200);
@@ -51,7 +53,7 @@ public abstract class Controller {
 
 	@FXML
 	public void handleExit() {
-		if (SystemLibrary.yesNoQuery(thePane.getScene().getWindow(), Messages.getString("System.EXIT"),
+		if (SystemMessages.showYesNoQuery(thePane.getScene().getWindow(), Messages.getString("System.EXIT"),
 				Messages.getString("System.ARE_YOU_SURE"))) {
 			Platform.exit();
 		}
@@ -59,7 +61,7 @@ public abstract class Controller {
 
 	@FXML
 	public void handleLogout() {
-		if (SystemLibrary.yesNoQuery(thePane.getScene().getWindow(), Messages.getString("MainMenu.LOGOUT"),
+		if (SystemMessages.showYesNoQuery(thePane.getScene().getWindow(), Messages.getString("MainMenu.LOGOUT"),
 				Messages.getString("System.ARE_YOU_SURE"))) {
 			switchScene((Stage) thePane.getScene().getWindow(), Messages.getString("LoginScene.TITLE"),
 					"/fxml/login.fxml", 300, 200);
@@ -68,7 +70,7 @@ public abstract class Controller {
 
 	@FXML
 	public void handleStudents() {
-		if (this instanceof MainController || SystemLibrary.yesNoQuery(thePane.getScene().getWindow(),
+		if (this instanceof MainController || SystemMessages.showYesNoQuery(thePane.getScene().getWindow(),
 				Messages.getString("MainMenu.STUDENTS"), Messages.getString("System.ARE_YOU_SURE"))) {
 			switchScene((Stage) thePane.getScene().getWindow(), Messages.getString("MainMenu.STUDENTS"),
 					"/fxml/students.fxml", 1000, 500);
@@ -77,7 +79,7 @@ public abstract class Controller {
 
 	@FXML
 	public void handleSchedule() {
-		if (this instanceof MainController || SystemLibrary.yesNoQuery(thePane.getScene().getWindow(),
+		if (this instanceof MainController || SystemMessages.showYesNoQuery(thePane.getScene().getWindow(),
 				Messages.getString("MainMenu.SCHEDULE"), Messages.getString("System.ARE_YOU_SURE"))) {
 			switchScene((Stage) thePane.getScene().getWindow(), Messages.getString("MainMenu.SCHEDULE"),
 					"/fxml/schedule.fxml", 1000, 500);
@@ -86,7 +88,7 @@ public abstract class Controller {
 
 	@FXML
 	public void handleUsers() {
-		if (this instanceof MainController || SystemLibrary.yesNoQuery(thePane.getScene().getWindow(),
+		if (this instanceof MainController || SystemMessages.showYesNoQuery(thePane.getScene().getWindow(),
 				Messages.getString("MainMenu.USERS"), Messages.getString("System.ARE_YOU_SURE"))) {
 			switchScene((Stage) thePane.getScene().getWindow(), Messages.getString("MainMenu.USERS"),
 					"/fxml/users.fxml", 1000, 500);
@@ -98,7 +100,7 @@ public abstract class Controller {
 		Person person = theTable.getSelectionModel().getSelectedItem();
 
 		if (person != null) {
-			if (SystemLibrary.yesNoQuery(thePane.getScene().getWindow(), Messages.getString("System.DELETE"),
+			if (SystemMessages.showYesNoQuery(thePane.getScene().getWindow(), Messages.getString("System.DELETE"),
 					Messages.getString("System.ARE_YOU_SURE"))) {
 				try {
 					if (person instanceof Student) {
@@ -111,12 +113,12 @@ public abstract class Controller {
 						theTable.getSelectionModel().selectFirst();
 					}
 				} catch (SQLException e) {
-					SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
+					SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
 							Messages.getString("System.ERROR"));
 				}
 			}
 		} else {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SELECT_ROW"), Messages.getString("System.ERROR"));
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SELECT_ROW"), Messages.getString("System.ERROR"));
 		}
 	}
 

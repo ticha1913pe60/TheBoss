@@ -6,8 +6,12 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import com.petarzlatev.languageclasses.Messages;
+import com.petarzlatev.languageclasses.SystemFormatter;
 import com.petarzlatev.languageclasses.SystemLibrary;
 import com.petarzlatev.languageclasses.SystemLibrary.OperType;
+import com.petarzlatev.languageclasses.SystemMessages;
+import com.petarzlatev.languageclasses.SystemProperties;
+import com.petarzlatev.languageclasses.SystemValidation;
 import com.petarzlatev.languageclasses.dao.StudentDAO;
 import com.petarzlatev.languageclasses.model.DataSource;
 import com.petarzlatev.languageclasses.model.Person;
@@ -79,7 +83,7 @@ public class StudentDialogController implements Initializable, DialogControllerA
 		firstName.setText(student.getFirstName());
 		lastName.setText(student.getLastName());
 		phoneNumber.setText(student.getPhoneNumber());
-		ratePerHour.setText(SystemLibrary.formatAmount(2, 2, RoundingMode.DOWN).format(student.getRatePerHour()));
+		ratePerHour.setText(SystemFormatter.formatAmount(2, 2, RoundingMode.DOWN).format(student.getRatePerHour()));
 
 		return true;
 	}
@@ -88,9 +92,9 @@ public class StudentDialogController implements Initializable, DialogControllerA
 	public Person processData(OperType operType, Person person) throws SQLException {
 		int studentID;
 		Student newStudent = (Student) person;
-		String firstname = SystemLibrary.toUpperFirstLetter(firstName.getText().trim());
-		String lastname = SystemLibrary.toUpperFirstLetter(lastName.getText().trim());
-		String phone = SystemLibrary.formatPhone(phoneNumber.getText().trim());
+		String firstname = SystemFormatter.formatNameFirstLetter(firstName.getText().trim());
+		String lastname = SystemFormatter.formatNameFirstLetter(lastName.getText().trim());
+		String phone = SystemFormatter.formatPhone(phoneNumber.getText().trim());
 		try {
 			double rate = Double.parseDouble(ratePerHour.getText().replace(",", "."));
 
@@ -99,7 +103,7 @@ public class StudentDialogController implements Initializable, DialogControllerA
 				if (studentID > 0) {
 					newStudent = new Student(firstname, lastname, phone, rate, studentID);
 				} else {
-					SystemLibrary
+					SystemMessages
 							.showErrorMsg(
 									Messages.getString("Error.ERROR_STUDENT_EXISTS") + SystemLibrary.DOUBLE_QUOTE
 											+ firstname + " " + lastname + SystemLibrary.DOUBLE_QUOTE,
@@ -111,7 +115,7 @@ public class StudentDialogController implements Initializable, DialogControllerA
 				}
 			}
 		} catch (NumberFormatException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_INVALID_NUMBER") + " " + e.getMessage(),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_INVALID_NUMBER") + " " + e.getMessage(),
 					Messages.getString("System.ERROR"));
 		}
 
@@ -124,32 +128,32 @@ public class StudentDialogController implements Initializable, DialogControllerA
 				&& !phoneNumber.getText().trim().isEmpty();
 
 		if (bRet) {
-			String firstname = SystemLibrary.toUpperFirstLetter(firstName.getText().trim());
-			String lastname = SystemLibrary.toUpperFirstLetter(lastName.getText().trim());
+			String firstname = SystemFormatter.formatNameFirstLetter(firstName.getText().trim());
+			String lastname = SystemFormatter.formatNameFirstLetter(lastName.getText().trim());
 			String phone = phoneNumber.getText().trim();
-			if (SystemLibrary.validateFullName(firstname, lastname)) {
-				if (!phone.isEmpty() && SystemLibrary.validatePhoneNumber(phone)) {
+			if (SystemValidation.validateFullName(firstname, lastname)) {
+				if (!phone.isEmpty() && SystemValidation.validatePhoneNumber(phone)) {
 					try {
 						bRet = Double.parseDouble(ratePerHour.getText().replace(",", ".")) > 0;
 						if (!bRet) {
-							SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_EMPTY_FIELD"),
+							SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_EMPTY_FIELD"),
 									Messages.getString("System.ERROR"));
 						}
 					} catch (NumberFormatException e) {
-						SystemLibrary.showErrorMsg(
+						SystemMessages.showErrorMsg(
 								Messages.getString("Error.ERROR_INVALID_NUMBER") + " " + e.getMessage(),
 								Messages.getString("System.ERROR"));
 						bRet = false;
 					}
 				} else {
-					SystemLibrary.showErrorMsg(
+					SystemMessages.showErrorMsg(
 							SystemLibrary.DOUBLE_QUOTE + phone + SystemLibrary.DOUBLE_QUOTE
 									+ Messages.getString("Error.ERROR_INVALID_PHONE"),
 							Messages.getString("System.ERROR"));
 					bRet = false;
 				}
 			} else {
-				SystemLibrary
+				SystemMessages
 						.showErrorMsg(
 								SystemLibrary.DOUBLE_QUOTE + firstname + " " + lastname + SystemLibrary.DOUBLE_QUOTE
 										+ Messages.getString("Error.ERROR_INVALID_NAME"),
@@ -157,7 +161,7 @@ public class StudentDialogController implements Initializable, DialogControllerA
 				bRet = false;
 			}
 		} else {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_EMPTY_FIELD"),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_EMPTY_FIELD"),
 					Messages.getString("System.ERROR"));
 			bRet = false;
 		}
@@ -169,14 +173,14 @@ public class StudentDialogController implements Initializable, DialogControllerA
 		boolean bRet = true;
 
 		try {
-			ratePerHour.setText(SystemLibrary.formatAmount(2, 2, RoundingMode.DOWN)
-					.format(Double.parseDouble(SystemLibrary.getProperty("RATE_PER_HOUR"))));
+			ratePerHour.setText(SystemFormatter.formatAmount(2, 2, RoundingMode.DOWN)
+					.format(Double.parseDouble(SystemProperties.getDefaultRatePerHour())));
 		} catch (NullPointerException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "RATE_PER_HOUR",
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "RATE_PER_HOUR",
 					Messages.getString("System.ERROR"));
 			bRet = false;
 		} catch (NumberFormatException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_CONFIG_PARAM") + "RATE_PER_HOUR",
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_CONFIG_PARAM") + "RATE_PER_HOUR",
 					Messages.getString("System.ERROR"));
 			bRet = false;
 		}

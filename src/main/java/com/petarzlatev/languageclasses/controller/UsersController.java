@@ -13,7 +13,11 @@ import java.util.Scanner;
 
 import com.petarzlatev.languageclasses.Messages;
 import com.petarzlatev.languageclasses.PasswordUtils;
+import com.petarzlatev.languageclasses.SystemFormatter;
 import com.petarzlatev.languageclasses.SystemLibrary;
+import com.petarzlatev.languageclasses.SystemMessages;
+import com.petarzlatev.languageclasses.SystemProperties;
+import com.petarzlatev.languageclasses.SystemValidation;
 import com.petarzlatev.languageclasses.controller.dialog.DialogControllerActions;
 import com.petarzlatev.languageclasses.dao.UserDAO;
 import com.petarzlatev.languageclasses.model.DataSource;
@@ -103,7 +107,7 @@ public class UsersController extends Controller implements Initializable {
 		isAdmin.setText(Messages.getString("UserColumn.IS_ADMIN"));
 
 		menuUsers.setDisable(!SystemLibrary.getCurrentUser().isAdmin());
-		menuItemLogOut.setDisable(SystemLibrary.noLogin());
+		menuItemLogOut.setDisable(SystemProperties.noLogin());
 		username.setCellValueFactory(new PropertyValueFactory<User, String>("username"));
 		password.setCellValueFactory(new PropertyValueFactory<User, String>("password"));
 		firstName.setCellValueFactory(new PropertyValueFactory<User, String>("firstName"));
@@ -160,7 +164,7 @@ public class UsersController extends Controller implements Initializable {
 				if (SystemLibrary.getCurrentUser().isAdmin()) {
 					handleDelete();
 				} else {
-					SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_NOT_ADMIN"),
+					SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_NOT_ADMIN"),
 							Messages.getString("System.ERROR"));
 				}
 			}
@@ -193,9 +197,9 @@ public class UsersController extends Controller implements Initializable {
 					String[] users = line.replaceAll("\\s", "").split(",");
 					if (users.length == 5) {
 						try {
-							if (SystemLibrary.validateFullName(users[2], users[3])) {
-								users[2] = SystemLibrary.toUpperFirstLetter(users[2]);
-								users[3] = SystemLibrary.toUpperFirstLetter(users[3]);
+							if (SystemValidation.validateFullName(users[2], users[3])) {
+								users[2] = SystemFormatter.formatNameFirstLetter(users[2]);
+								users[3] = SystemFormatter.formatNameFirstLetter(users[3]);
 								String salt = PasswordUtils.getSalt(30);
 								String password = PasswordUtils.generateSecurePassword(users[1], salt);
 								newID = database.addUser(users[2], users[3], users[0], password, users[4], salt);
@@ -205,20 +209,20 @@ public class UsersController extends Controller implements Initializable {
 									count++;
 								}
 							} else {
-								SystemLibrary.showErrorMsg(SystemLibrary.DOUBLE_QUOTE + users[2] + " " + users[3]
+								SystemMessages.showErrorMsg(SystemLibrary.DOUBLE_QUOTE + users[2] + " " + users[3]
 										+ SystemLibrary.DOUBLE_QUOTE + Messages.getString("Error.ERROR_INVALID_NAME"),
 										Messages.getString("System.ERROR"));
 								bRet = false;
 								break;
 							}
 						} catch (NumberFormatException e) {
-							SystemLibrary.showErrorMsg(
+							SystemMessages.showErrorMsg(
 									Messages.getString("Error.ERROR_INVALID_NUMBER") + " " + e.getMessage(),
 									Messages.getString("System.ERROR"));
 							bRet = false;
 							break;
 						} catch (SQLException e) {
-							SystemLibrary.showErrorMsg(
+							SystemMessages.showErrorMsg(
 									Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
 									Messages.getString("System.ERROR"));
 							bRet = false;
@@ -226,20 +230,20 @@ public class UsersController extends Controller implements Initializable {
 						}
 
 					} else {
-						SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_INVALID_DATA_FORMAT") + line,
+						SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_INVALID_DATA_FORMAT") + line,
 								Messages.getString("System.ERROR"));
 						bRet = false;
 						break;
 					}
 				}
 				if (bRet) {
-					SystemLibrary.showMsgBox(
+					SystemMessages.showMsgBox(
 							count + (count == 1 ? Messages.getString("MSG_IMPORT_SINGLE_ROW")
 									: Messages.getString("MSG_IMPORT_MULTIPLE_ROWS")),
 							Messages.getString("System.MSG"));
 				}
 			} catch (FileNotFoundException e) {
-				SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_FILE_NOT_FOUND") + " " + e.getMessage(),
+				SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_FILE_NOT_FOUND") + " " + e.getMessage(),
 						Messages.getString("System.ERROR"));
 			}
 		}
@@ -251,10 +255,10 @@ public class UsersController extends Controller implements Initializable {
 		try {
 			handleUserChange(null);
 		} catch (IOException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
 					Messages.getString("System.ERROR"));
 		} catch (SQLException e) {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
 					Messages.getString("System.ERROR"));
 		}
 	}
@@ -268,19 +272,19 @@ public class UsersController extends Controller implements Initializable {
 				try {
 					handleUserChange(user);
 				} catch (IOException e) {
-					SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
+					SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_LOADING_SCENE") + " " + e.getMessage(),
 							Messages.getString("System.ERROR"));
 				} catch (SQLException e) {
-					SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
+					SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SQL_QUERY") + " " + e.getMessage(),
 							Messages.getString("System.ERROR"));
 				}
 
 			} else {
-				SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_SELECT_ROW"),
+				SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_SELECT_ROW"),
 						Messages.getString("System.ERROR"));
 			}
 		} else {
-			SystemLibrary.showErrorMsg(Messages.getString("Error.ERROR_NOT_ADMIN"), Messages.getString("System.ERROR"));
+			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_NOT_ADMIN"), Messages.getString("System.ERROR"));
 		}
 	}
 
@@ -315,7 +319,7 @@ public class UsersController extends Controller implements Initializable {
 
 		// set style for scene
 		dialog.getDialogPane().getStylesheets()
-				.add(getClass().getResource("/fxml/css/" + SystemLibrary.getUITheme()).toExternalForm());
+				.add(getClass().getResource("/fxml/css/" + SystemProperties.getUITheme()).toExternalForm());
 		dialog.getDialogPane().getStyleClass().add("myDialog");
 
 		// set controls defaults
