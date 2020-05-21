@@ -125,14 +125,15 @@ public class HibernateUserDAO implements PersonDAO, UserDAO {
 	}
 
 	@Override
-	public boolean deleteUser(int id) throws SQLException {
+	public boolean deletePerson(Person person) throws SQLException {
 		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
 		try {
 			session.beginTransaction();
-			Query myQuery = session.createQuery("delete from User where ID_PERSON=:id").setParameter("id", id);
+			Query myQuery = session.createQuery("delete from User where ID_PERSON=:id").setParameter("id",
+					person.getPersonID());
 			int count = myQuery.executeUpdate();
 			session.getTransaction().commit();
 
@@ -141,11 +142,6 @@ public class HibernateUserDAO implements PersonDAO, UserDAO {
 			session.close();
 			factory.close();
 		}
-	}
-
-	@Override
-	public boolean deletePerson(Person person) throws SQLException {
-		return deleteUser(person.getPersonID());
 	}
 
 }

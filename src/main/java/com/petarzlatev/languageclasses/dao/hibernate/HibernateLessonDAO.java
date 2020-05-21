@@ -54,7 +54,6 @@ public class HibernateLessonDAO implements LessonDAO {
 					session.merge(lesson);
 					session.getTransaction().commit();
 				} else {
-					System.out.println(entry.toString());
 					session.beginTransaction();
 					Student atending = entry.getUserObject().getAtendingStudent();
 					lesson = new Lesson(atending, entry.getUserObject().getLangClassType(),

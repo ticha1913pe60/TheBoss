@@ -5,5 +5,5 @@ import java.sql.SQLException;
 import com.petarzlatev.languageclasses.model.Person;
 
 public interface PersonDAO {
-	public boolean deletePerson(Person person) throws SQLException;
+	boolean deletePerson(Person person) throws SQLException;
 }

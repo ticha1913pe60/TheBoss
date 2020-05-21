@@ -8,8 +8,8 @@ public class SystemFormatter {
 
 	public static NumberFormat formatAmount(int min, int max, RoundingMode mode) {
 		NumberFormat df = DecimalFormat.getInstance();
-		df.setMinimumFractionDigits(2);
-		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(min);
+		df.setMaximumFractionDigits(max);
 		df.setRoundingMode(RoundingMode.DOWN);
 
 		return df;

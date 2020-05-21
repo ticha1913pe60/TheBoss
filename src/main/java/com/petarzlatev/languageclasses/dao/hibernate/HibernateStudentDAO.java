@@ -97,14 +97,15 @@ public class HibernateStudentDAO implements PersonDAO, StudentDAO {
 		return true;
 	}
 
-	private boolean deleteStudent(int id) throws SQLException {
+	@Override
+	public boolean deletePerson(Person person) throws SQLException {
 		SessionFactory factory = new Configuration().configure(DataSource.getInstance().getHibernateConfigFile())
 				.addAnnotatedClass(Student.class).buildSessionFactory();
 		Session session = factory.getCurrentSession();
 
 		try {
 			session.beginTransaction();
-			Student student = session.get(Student.class, id);
+			Student student = session.get(Student.class, person.getPersonID());
 			session.delete(student);
 			session.getTransaction().commit();
 
@@ -113,11 +114,7 @@ public class HibernateStudentDAO implements PersonDAO, StudentDAO {
 			session.close();
 			factory.close();
 		}
-	}
 
-	@Override
-	public boolean deletePerson(Person person) throws SQLException {
-		return deleteStudent(person.getPersonID());
 	}
 
 }

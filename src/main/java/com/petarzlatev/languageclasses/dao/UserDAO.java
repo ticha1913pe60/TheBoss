@@ -21,6 +21,4 @@ public interface UserDAO {
 	boolean updateUser(String firstName, String lastName, String username, String password, String isAdmin, int id)
 			throws SQLException;
 
-	boolean deleteUser(int id) throws SQLException;
-
 }

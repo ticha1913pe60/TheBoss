@@ -49,6 +49,10 @@ public class StudentDialogController implements Initializable, DialogControllerA
 	@FXML
 	private Label labelCurrency;
 
+	private String getRatePerHourToSet(double rateToSet) {
+		return SystemFormatter.formatAmount(2, 2, RoundingMode.DOWN).format(rateToSet);
+	}
+
 	/****************************************************
 	 * Initializable
 	 ****************************************************/
@@ -67,7 +71,7 @@ public class StudentDialogController implements Initializable, DialogControllerA
 		ratePerHour.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (!newValue.matches("\\d{0,7}([\\,\\.]\\d{0,2})?")) {
+				if (!SystemValidation.validateRatePerHour(newValue)) {
 					ratePerHour.setText(oldValue);
 				}
 			}
@@ -75,7 +79,7 @@ public class StudentDialogController implements Initializable, DialogControllerA
 	}
 
 	/****************************************************
-	 * Validateable
+	 * DialogControllerActions
 	 ****************************************************/
 	@Override
 	public boolean setData(Person person) {
@@ -83,7 +87,7 @@ public class StudentDialogController implements Initializable, DialogControllerA
 		firstName.setText(student.getFirstName());
 		lastName.setText(student.getLastName());
 		phoneNumber.setText(student.getPhoneNumber());
-		ratePerHour.setText(SystemFormatter.formatAmount(2, 2, RoundingMode.DOWN).format(student.getRatePerHour()));
+		ratePerHour.setText(getRatePerHourToSet(student.getRatePerHour()));
 
 		return true;
 	}
@@ -173,8 +177,7 @@ public class StudentDialogController implements Initializable, DialogControllerA
 		boolean bRet = true;
 
 		try {
-			ratePerHour.setText(SystemFormatter.formatAmount(2, 2, RoundingMode.DOWN)
-					.format(Double.parseDouble(SystemProperties.getDefaultRatePerHour())));
+			ratePerHour.setText(getRatePerHourToSet(Double.parseDouble(SystemProperties.getDefaultRatePerHour())));
 		} catch (NullPointerException e) {
 			SystemMessages.showErrorMsg(Messages.getString("Error.ERROR_CONFIG_PARAM_MISSING") + "RATE_PER_HOUR",
 					Messages.getString("System.ERROR"));
@@ -187,4 +190,5 @@ public class StudentDialogController implements Initializable, DialogControllerA
 
 		return bRet;
 	}
+
 }

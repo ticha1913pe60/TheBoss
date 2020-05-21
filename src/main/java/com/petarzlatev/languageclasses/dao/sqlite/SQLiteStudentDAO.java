@@ -108,10 +108,11 @@ public class SQLiteStudentDAO implements PersonDAO, StudentDAO {
 		return true;
 	}
 
-	private boolean deleteStudent(int id) throws SQLException {
+	@Override
+	public boolean deletePerson(Person person) throws SQLException {
 		PreparedStatement deleteStudent = conn.prepareStatement(DELETE_STUDENT);
 
-		deleteStudent.setInt(1, id);
+		deleteStudent.setInt(1, person.getPersonID());
 		int affectedRows = deleteStudent.executeUpdate();
 
 		if (affectedRows != 1) {
@@ -120,11 +121,6 @@ public class SQLiteStudentDAO implements PersonDAO, StudentDAO {
 		deleteStudent.close();
 
 		return true;
-	}
-
-	@Override
-	public boolean deletePerson(Person person) throws SQLException {
-		return deleteStudent(person.getPersonID());
 	}
 
 }

@@ -74,7 +74,7 @@ public class UserDialogController implements Initializable, DialogControllerActi
 	}
 
 	/****************************************************
-	 * Validateable
+	 * DialogControllerActions
 	 ****************************************************/
 	@Override
 	public boolean validateData() {

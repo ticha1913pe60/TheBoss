@@ -129,9 +129,9 @@ public class SQLiteUserDAO implements PersonDAO, UserDAO {
 	}
 
 	@Override
-	public boolean deleteUser(int id) throws SQLException {
+	public boolean deletePerson(Person person) throws SQLException {
 		PreparedStatement deleteUser = conn.prepareStatement(DELETE_USER);
-		deleteUser.setInt(1, id);
+		deleteUser.setInt(1, person.getPersonID());
 		int affectedRows = deleteUser.executeUpdate();
 
 		if (affectedRows != 1) {
@@ -140,11 +140,6 @@ public class SQLiteUserDAO implements PersonDAO, UserDAO {
 		deleteUser.close();
 
 		return true;
-	}
-
-	@Override
-	public boolean deletePerson(Person person) throws SQLException {
-		return deleteUser(person.getPersonID());
 	}
 
 }

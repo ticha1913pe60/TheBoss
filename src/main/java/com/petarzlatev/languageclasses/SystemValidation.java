@@ -15,4 +15,8 @@ public class SystemValidation {
 		return !firstName.isEmpty() && !lastName.isEmpty() && validateName(firstName) && validateName(lastName);
 	}
 
+	public static boolean validateRatePerHour(String testRate) {
+		return testRate.matches("\\d{0,7}([\\,\\.]\\d{0,2})?");
+	}
+
 }
