@@ -60,22 +60,25 @@ public class DataSource {
 	public static final String TABLE_HIBERNATE_SEQ = "hibernate_sequence";
 	public static final String COLUMN_HIBERNATE_NEXT_VAL = "next_val";
 
-	public static final String SQLITE = "1";
-	public static final String ORACLE = "2";
+	private static final String SQLITE = "1";
+	private static final String ORACLE = "2";
 
 	/****************************************************
 	 * Members *
 	 ****************************************************/
 
 	private Connection conn;
-	private static DataSource instance = new DataSource();
 
 	private DataSource() {
 
 	}
 
+	private static class DataSourceHelper {
+		private static DataSource instance = new DataSource();
+	}
+
 	public static DataSource getInstance() {
-		return instance;
+		return DataSourceHelper.instance;
 	}
 
 	public Connection getConnection() {
